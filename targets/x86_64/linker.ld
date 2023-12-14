@@ -4,16 +4,37 @@ SECTIONS
 {
     . = 1M;
 
-    .boot :
+    .boot : ALIGN(4K)
     {
         /* multiboot header is the first thing to boot up*/
         KEEP(*(.multiboot_header))
     }
 
-    .text :
+    .text : ALIGN(4K)
     {
         /* Then the text main section */
         *(.text)
+    }
+
+   .rodata : ALIGN(4K)
+    {
+        /* Then the read only data section */
+        *(.rodata)
+    }
+
+    .data : ALIGN(4K)
+    {
+        /* Then the data main section */
+        *(.data)
+    }
+
+    .bss : ALIGN(4K)
+    {
+        /* Then the bss stack section */
+        __bss_start = .;
+        *(COMMON)
+        *(.bss)
+        bss_end = .;
     }
 
     .idt BLOCK(0x1000) : ALIGN(0x1000)

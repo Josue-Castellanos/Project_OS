@@ -28,3 +28,18 @@ build-x86_64: $(kernel_object_files) $(x86_64_object_files)
 	x86_64-elf-ld -n -o dist/x86_64/kernel.bin -T targets/x86_64/linker.ld $(kernel_object_files) $(x86_64_object_files) && \
 	cp dist/x86_64/kernel.bin targets/x86_64/iso/boot/kernel.bin && \
 	grub-mkrescue /usr/lib/grub/i386-pc -o dist/x86_64/kernel.iso targets/x86_64/iso
+
+.PHONY: clean
+clean:
+	rm -rf build/
+	rm -rf dist/
+	rm -f targets/x86_64/iso/boot/kernel.bin
+	
+.PHONY: build-hdd
+build-hdd: build-x86_64
+	mkdir -p dist/hdd && \
+	dd if=/dev/zero of=dist/hdd/hdd.img bs=1M count=1024 && \
+	mkfs.fat -F 32 -n "JOSUE OS" dist/hdd/hdd.img && \
+	mmd -i dist/hdd/hdd.img ::/EFI && \
+	mmd -i dist/hdd/hdd.img ::/EFI/BOOT && \
+	mcopy -i dist/hdd/hdd.img dist/x86_64/kernel.bin ::/EFI/BOOT

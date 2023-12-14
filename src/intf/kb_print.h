@@ -24,15 +24,23 @@ enum {
 };
 
 void print_clear();
+void updateCursor();
+void print_back_space();
+void print_tab();
+void int_to_str(uint16_t num, char* buffer, size_t buffer_size);
+void print_int(uint16_t num);
 void print_char(char character);
 void print_str(char* string);
 void print_newline();
 void print_set_color(uint8_t foreground, uint8_t background);
-void reset_key_buffer(char* string);
+void reset_key_buffer();
 uint16_t strLength(char* string);
 uint8_t strEqual(char* string1, char* string2);
 void keyboard_handler(void);
-extern void create_file(char* filename);
+void memCpy(void *dest, void *src, size_t count);
+void memSet(void *dest, char val, size_t count);
+void strncpy(char *dest, char *src, size_t n);
+char* strChr(char* str, char ch);
 
 
 

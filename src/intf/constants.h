@@ -37,3 +37,63 @@
 
 #define PIC_EOI		0x20		/* End-of-interrupt command code */
 #define KEYBOARD_IRQ 1          /* Standard ISA Interupt Request 1 - Keyboard Interupt*/
+
+#define FAT_EOF FAT32_EOF       /* Define a generic EOF constant */
+#define FAT32_EOF 0x0FFFFFFF    /* FAT32 EOF constant */
+
+#define SECTOR_SIZE 512
+
+#define FAT_ENTRY_SIZE 4
+
+#define CLUSTER_SIZE 4096
+
+#define FAT32_CLUSTER_SIZE 4096 /* FAT32 cluster size in bytes */
+
+#define FAT32_ROOT_DIR_CLUSTER 2    /* FAT32 root directory cluster */
+
+#define FAT32_MAX_FILE_NAME_LENGTH 255 /* FAT32 max file name length */
+
+#define FAT32_MAX_PATH_LENGTH 4096 /* FAT32 max path length */
+
+#define FAT32_MAX_PATH_DEPTH 255 /* FAT32 max path depth */
+
+#define FAT32_MAX_PATH_COMPONENT_LENGTH 255 /* FAT32 max path component length */
+
+#define FAT32_MAX_PATH_COMPONENTS 255 /* FAT32 max path components */
+
+#define FILENAME_LENGTH 8
+
+#define EXTENSION_LENGTH 3
+
+#define END_OF_FILE_MARKER 0x0FFFFFFF
+
+#define BAD_CLUSTER_MARKER 0xFFF7
+
+#define MAX_CLUSTERS_FAT32 0x0FFFFFF7  // FAT32 supports up to 0xFFFFFF7 clusters (0xFFFFFF8 to 0xFFFFFFFF are reserved)
+
+#define FAT32_MAX_FILES_PER_DIR 512 /* FAT32 max files per directory */
+
+#define FAT32_MAX_DIRS_PER_DIR 512 /* FAT32 max directories per directory */
+
+#define FAT32_MAX_DIRS_PER_VOLUME 65536 /* FAT32 max directories per volume */
+
+#define FAT32_MAX_FILES_PER_VOLUME 65536 /* FAT32 max files per volume */
+
+#define FAT32_MAX_DIRS_PER_CLUSTER 65536 /* FAT32 max directories per cluster */
+
+#define FAT32_MAX_FILES_PER_CLUSTER 65536 /* FAT32 max files per cluster */
+
+#define FAT32_MAX_DIRS_PER_ROOT_DIR 65536 /* FAT32 max directories per root directory */
+
+#define FAT32_MAX_FILES_PER_ROOT_DIR 65536 /* FAT32 max files per root directory */
+
+#define FAT32_MAX_DIRS_PER_PATH 65536 /* FAT32 max directories per path */
+
+#define FAT32_MAX_FILES_PER_PATH 65536 /* FAT32 max files per path */
+
+#define FAT32_MAX_DIRS_PER_PATH_COMPONENT 65536 /* FAT32 max directories per path component */
+
+#define FAT32_MAX_FILES_PER_PATH_COMPONENT 65536 /* FAT32 max files per path component */
+
+#define FAT32_MAX_DIRS_PER_PATH_COMPONENT 65536 /* FAT32 max directories per path component */
+

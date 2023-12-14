@@ -10,7 +10,6 @@ header_start:
     ;magic number 
     dd 0xe85250d6    ; The loader searches for a magic number to find the 
                      ; header in the boot sector which is 0xE85250D6 bytes for Multiboot2
-    ;dd 0x10000       ; Address where the boot sector will be loaded
 
     ;architecture
     dd 0    ;0 = 32-bit protected mode of i386 cpu
@@ -25,4 +24,8 @@ header_start:
     dw 0    ;flags
     dd 8    ;size
 header_end:
+
+
+
+
 

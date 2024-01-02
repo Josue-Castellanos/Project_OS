@@ -30,10 +30,16 @@ SECTIONS
 
     .bss : ALIGN(4K)
     {
-        /* Then the bss stack section */
+        /* Then start of the bss stack section */
         __bss_start = .;
+        
+        /* Include common symbols */
         *(COMMON)
+        
+        /* Include the standard .bss section */
         *(.bss)
+        
+        /* End of the bss stack section */
         bss_end = .;
     }
 

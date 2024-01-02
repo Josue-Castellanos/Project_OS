@@ -1,4 +1,3 @@
-#include <stdint.h>
 #include "ports.h"
 
 // The general-purpose registers are 64-bit, so you need to use 

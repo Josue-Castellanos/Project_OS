@@ -1,3 +1,6 @@
+#ifndef CONSTANTS_H
+#define CONTSTANTS_H
+
 #define IDT_SIZE 256
 #define MAX_SIZE 30
 
@@ -97,3 +100,4 @@
 
 #define FAT32_MAX_DIRS_PER_PATH_COMPONENT 65536 /* FAT32 max directories per path component */
 
+#endif

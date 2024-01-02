@@ -131,17 +131,19 @@ void keyboard_handler() {
                     print_char('\0');           //ENTER
                     if (strEqual(key_buffer, "clear")) {
                         print_clear();
-                        print_set_color(GREEN, BLUE);
+                        print_set_color(GREEN, BLACK);
                     }
                     else if (strEqual(key_buffer, "create")) {
 
                     }
 
                     else {
+                        print_set_color(BRIGHT_GREEN, BLACK);
                         print_str("\nERR: Bad command!");
                     }
-
+                    print_set_color(MAGENTA, BLACK);
                     print_str("\nJDOS> ");
+                    print_set_color(GREEN, BLACK);
                     reset_key_buffer();
                     break;
                 // case 29:

@@ -15,7 +15,7 @@ uint8_t key_buffer_index = 0;
 
 // VGA memory buffer
 struct Char* buffer = (struct Char *)0xb8000;
-uint8_t color = GREEN | BLUE << 4;
+uint8_t color = GREEN | BLACK << 4;
 
 // Updates Cursor
 void updateCursor() {

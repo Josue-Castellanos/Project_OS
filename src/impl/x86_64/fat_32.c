@@ -12,6 +12,7 @@ BootSector boot_sector;
 // This function reads the boot sector, detects the FAT type, and initializes the file system structure.
 void initialize_fat_file_system(FatFileSystem* fs, char* file)
 {
+    print_set_color(GREEN, BLACK);
     // Read the boot sector
     read_boot_sector(&fs->boot_sector);
     // Default root cluster for FAT32
@@ -29,7 +30,7 @@ void initialize_fat_file_system(FatFileSystem* fs, char* file)
     fs->fat_offset = fat_offset;
     fs->data_offset = data_offset;
     fs->current_cluster = fs->boot_sector.root_cluster;
-
+    
      // Total sectors in volume (including VBR):
     uint32_t total_sectors = (fs->boot_sector.total_sectors_32 == 0) ? fs->boot_sector.total_sectors_32 : fs->boot_sector.total_sectors_16;
     print_str("Total Sectors: ");
@@ -70,6 +71,8 @@ void initialize_fat_file_system(FatFileSystem* fs, char* file)
     print_int (total_clusters);
     print_str("\n");
 
+    print_set_color(YELLOW, BLACK);
+    print_str("\nFile system initialized:\n");
     identify_fat_system(total_clusters);
 }
 
@@ -178,7 +181,7 @@ void update_directory_entry(DirectoryEntry* entry, char* filename, char* extensi
 
 // Identify fat system
 void identify_fat_system(uint32_t total_clusters) {
-        // Calculate the sector number of the first sector in the cluster
+    // Calculate the sector number of the first sector in the cluster
     if (SECTOR_SIZE == 0) {
         // This is an ExFAT file system
         print_str("Detected ExFAT\n");

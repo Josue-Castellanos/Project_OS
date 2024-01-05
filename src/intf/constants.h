@@ -27,7 +27,7 @@
 #define VGA_MAX_HEIGHT 25
 
 #define ICW1_ICW4_INIT 0x11		/* Indicates that ICW4 will be present */
-                                /* Initialization - required! */
+                                /* Initialization - ired! */
 #define ICW1_SINGLE	0x02		/* Single (cascade) mode */
 #define ICW1_INTERVAL4	0x04		/* Call address interval 4 (8) */
 #define ICW1_LEVEL	0x08		/* Level triggered (edge) mode */
@@ -39,7 +39,7 @@
 #define ICW4_SFNM	0x10		/* Special fully nested (not) */
 
 #define PIC_EOI		0x20		/* End-of-interrupt command code */
-#define KEYBOARD_IRQ 1          /* Standard ISA Interupt Request 1 - Keyboard Interupt*/
+#define KEYBOARD_IRQ 1          /* Standard ISA Interupt est 1 - Keyboard Interupt*/
 
 #define FAT_EOF FAT32_EOF       /* Define a generic EOF constant */
 #define FAT32_EOF 0x0FFFFFFF    /* FAT32 EOF constant */
@@ -50,6 +50,8 @@
 
 #define CLUSTER_SIZE 4096
 
+#define FILE_SIZE 1024
+
 #define FAT32_CLUSTER_SIZE 4096 /* FAT32 cluster size in bytes */
 
 #define FAT32_ROOT_DIR_CLUSTER 2    /* FAT32 root directory cluster */
@@ -57,12 +59,6 @@
 #define FAT32_MAX_FILE_NAME_LENGTH 255 /* FAT32 max file name length */
 
 #define FAT32_MAX_PATH_LENGTH 4096 /* FAT32 max path length */
-
-#define FAT32_MAX_PATH_DEPTH 255 /* FAT32 max path depth */
-
-#define FAT32_MAX_PATH_COMPONENT_LENGTH 255 /* FAT32 max path component length */
-
-#define FAT32_MAX_PATH_COMPONENTS 255 /* FAT32 max path components */
 
 #define FILENAME_LENGTH 8
 
@@ -76,28 +72,36 @@
 
 #define FAT32_MAX_FILES_PER_DIR 512 /* FAT32 max files per directory */
 
-#define FAT32_MAX_DIRS_PER_DIR 512 /* FAT32 max directories per directory */
-
-#define FAT32_MAX_DIRS_PER_VOLUME 65536 /* FAT32 max directories per volume */
-
-#define FAT32_MAX_FILES_PER_VOLUME 65536 /* FAT32 max files per volume */
-
 #define FAT32_MAX_DIRS_PER_CLUSTER 65536 /* FAT32 max directories per cluster */
 
-#define FAT32_MAX_FILES_PER_CLUSTER 65536 /* FAT32 max files per cluster */
+#define O_RDONLY    0
 
-#define FAT32_MAX_DIRS_PER_ROOT_DIR 65536 /* FAT32 max directories per root directory */
+#define O_WRONLY    1
 
-#define FAT32_MAX_FILES_PER_ROOT_DIR 65536 /* FAT32 max files per root directory */
+#define O_RDWR      2
 
-#define FAT32_MAX_DIRS_PER_PATH 65536 /* FAT32 max directories per path */
+#define O_CREAT     64
 
-#define FAT32_MAX_FILES_PER_PATH 65536 /* FAT32 max files per path */
+#define O_APPEND    1024
 
-#define FAT32_MAX_DIRS_PER_PATH_COMPONENT 65536 /* FAT32 max directories per path component */
+#define O_DIRECT    16384
 
-#define FAT32_MAX_FILES_PER_PATH_COMPONENT 65536 /* FAT32 max files per path component */
+#define O_DIRECTORY 65536
 
-#define FAT32_MAX_DIRS_PER_PATH_COMPONENT 65536 /* FAT32 max directories per path component */
+#define O_NOFOLLOW  131072
+
+#define O_NOATIME   262144
+
+#define O_CLOEXEC   524288
+
+#define O_SYNC      1052672
+
+#define O_PATH      2097152
+
+#define O_TMPFILE   4259840 
+
+#define O_TRUNC     0x0400
+
+#define EXIT_FAILURE 1
 
 #endif

@@ -47,6 +47,7 @@ load_IDT:
     sti
     ret
     GLOBAL load_IDT
+
 long_mode_start:
     mov ax, 0           ; Set the A-register to the data descriptor.
     mov ss, ax          ; Set the data segment to the A-register.

@@ -1,5 +1,5 @@
-#ifndef STR_MANIP_H
-#define STR_MANIP_H
+#ifndef STRING_H
+#define STRING_H
 #include <stdint.h>
 #include <stddef.h>
 

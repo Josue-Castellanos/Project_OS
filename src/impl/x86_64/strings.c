@@ -1,4 +1,6 @@
-#include "str_manip.h"
+#include "strings.h"
+#include <stdint.h>
+
 
 // Length of string
 uint16_t strLength(char* string) {

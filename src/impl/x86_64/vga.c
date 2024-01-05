@@ -1,7 +1,7 @@
 #include "vga.h"
 #include "ports.h"
 #include "constants.h"
-#include "str_manip.h"
+#include "strings.h"
 #include "common.h"
 
 struct Char
@@ -133,7 +133,7 @@ void print_set_color(uint8_t foreground, uint8_t background) {
 // Backspace
 void print_back_space()
 {
-    if (col > 8)
+    if (col > 6)
     {
         col--;
         struct Char empty = {

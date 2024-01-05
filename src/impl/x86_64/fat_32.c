@@ -3,6 +3,9 @@
 #include "vga.h"
 #include "hdd.h"
 #include "common.h"
+#include "memory.h"
+#include "strings.h"
+
 
 fat_type fatType; 
 BootSector boot_sector;
@@ -73,7 +76,8 @@ void initialize_fat_file_system(FatFileSystem* fs, char* file)
 
     print_set_color(YELLOW, BLACK);
     print_str("\nFile system initialized:\n");
-    identify_fat_system(total_clusters);
+    fs->boot_sector.total_clusters = total_clusters;
+    identify_fat_system(fs->boot_sector.total_clusters);
 }
 
 //
@@ -291,119 +295,71 @@ void parse_filename(char* filename, char* name, char* ext) {
     }
 }
 
-// void delete_file
-void delete_file(char* filename) {
+void create_file(char* filename, FatFileSystem* fs) {
+    print_set_color(RED, BLACK);
+    read_boot_sector(&fs->boot_sector);
 
-    read_boot_sector(&boot_sector);
+    char name[FILENAME_LENGTH + 1];
+    char ext[EXTENSION_LENGTH + 1];
 
-    // Find the directory entry for the file
-    DirectoryEntry entry;
-    if (!find_directory_entry(&entry, filename)) {
-        // Replace this with your actual VGA print function
-        print_str("\nFile not found\n");
-        return;
-    }
+    // Parse the filename and extension
+    parse_filename(filename, name, ext);
 
-    // Mark the directory entry as unused
-    entry.filename[0] = 0xE5;
+    // Sectors occupied by the root directory:
+    uint32_t root_dir_sectors = ((fs->boot_sector.root_entry_count * 32) + (fs->boot_sector.bytes_per_sector - 1)) / fs->boot_sector.bytes_per_sector;
 
-    // Write the updated directory entry back to disk
-    write_directory_entry(&entry, filename);
+    uint32_t fat_size = fs->boot_sector.sectors_per_fat_32 * fs->boot_sector.bytes_per_sector;
 
-    // Free the clusters used by the file
-    free_clusters(entry.cluster_low | (entry.cluster_high << 16));
-}
+    // First data sector number:
+    uint32_t first_data_sector = fs->boot_sector.reserved_sector_count + (fs->boot_sector.fat_count * fat_size) + root_dir_sectors;
 
-void write_directory_entry(DirectoryEntry* entry, char* filename) {
-    read_boot_sector(&boot_sector);
+    // Total data sectors:
+    uint32_t first_fat_sector = fs->boot_sector.reserved_sector_count;
 
-    // Calculate the sector number of the first sector in the cluster
-    uint32_t root_dir_sectors = ((boot_sector.root_entry_count * 32) + (boot_sector.bytes_per_sector - 1)) / boot_sector.bytes_per_sector;
-    uint32_t first_data_sector = boot_sector.reserved_sector_count + (boot_sector.fat_count * boot_sector.table_size_16) + root_dir_sectors;
-    uint32_t first_sectorofRootDir = first_data_sector - root_dir_sectors;
-
-    // Read the root directory into a buffer
-    char buffer[boot_sector.bytes_per_sector];
-    read_sector(first_sectorofRootDir, buffer, boot_sector.bytes_per_sector);
-
-    // Iterate over all directory entries in the cluster
-    for (size_t i = 0; i < boot_sector.bytes_per_sector; i += 32) {
-        // Check if the entry is unused
-        if (strEqual((buffer + i), filename) == 0) {
-            // Copy the directory entry into the buffer
-            memCpy(buffer + i, entry, sizeof(DirectoryEntry));
-
-            // Write the sector back to disk
-            write_sector(first_sectorofRootDir, buffer, boot_sector.bytes_per_sector);
-
-            // Replace this with your actual VGA print function
-            print_str("\nFile deleted successfully\n");
-            return;
-        }
-    }
-}
-
-// void create_file
-void create_file(char *filename, FatFileSystem* fs, uint32_t* FAT) {
-    // Find an available cluster
-    uint32_t first_cluster = find_free_cluster(FAT);
-
-    DirectoryEntry newEntry;
-    newEntry.filename[0] = 0x00;
-    newEntry.attributes = 0x20;
-    newEntry.cluster_low = 0x0000;
-    newEntry.cluster_high = 0x0000;
-    newEntry.file_size = 0x00000000;
-    newEntry.ext[0] = 0x00;
-    newEntry.reserved = ' ';
-    newEntry.create_date = 0x0000;
-    newEntry.create_time = 0x0000;
-    newEntry.last_access_date = 0x0000;
-    newEntry.last_mod_date = 0x0000;
-    newEntry.last_mod_time = 0x0000;
-
-    // Update the FAT entries to link the clusters
-    update_cluster(first_cluster);
-    FAT[first_cluster] = FAT32_EOF;
-
-    uint32_t first_sectorOfRootDir = ((first_cluster - 2) * fs->boot_sector.sectors_per_cluster) + fs->boot_sector.reserved_sector_count + (fs->boot_sector.fat_count * fs->boot_sector.table_size_16) + ((fs->boot_sector.root_entry_count * 32) + (fs->boot_sector.bytes_per_sector - 1)) / fs->boot_sector.bytes_per_sector;
-    uint8_t buffer[fs->boot_sector.bytes_per_sector];
-    read_sector(first_sectorOfRootDir, buffer, fs->boot_sector.bytes_per_sector);
+    char buff[fs->boot_sector.bytes_per_sector];
+    read_sector(first_data_sector, buff, fs->boot_sector.bytes_per_sector);
 
     // Find an empty directory entry (first byte of filename will be 0x00)
-    for (int i = 0; i < fs->boot_sector.bytes_per_sector; i += 32) {
-        if (buffer[i] == 0x00) {
+    for (int i = 0; i < fs->boot_sector.bytes_per_sector; i += 64)
+    {
+        if (buff[i] == '\0')
+        {
+            // Find an available cluster
+            uint32_t first_cluster = allocate_cluster();
+
+            // If no available cluster was found, print an error message and return
+            if (first_cluster == 0)
+            {
+                print_str("\nNo available clusters found\n");
+                print_str("\n");
+                return;
+            }
+
+            DirectoryEntry entry;
             // Copy the filename and extension
-            memCpy(buffer + i, filename, FILENAME_LENGTH);
-            memCpy(buffer + i + 8, "txt", EXTENSION_LENGTH);
+            memCpy(entry.filename, filename, FILENAME_LENGTH);
+            memCpy(entry.ext, ext, EXTENSION_LENGTH);
 
             // Set the file attributes
-            buffer[i + 11] = 0x20;
+            entry.attributes = 0x20;
 
             // Set the file size
-            *(uint32_t*)(buffer + i + 28) = 0;
+            *(uint32_t *)&entry.file_size = FILE_SIZE;
 
             // Set the first cluster
-            *(uint16_t*)(buffer + i + 26) = first_cluster;
+            *(uint16_t *)&entry.cluster_low = first_cluster;
+
+            // Write the directory entry back to the buffer
+            memCpy(buff + i, &entry, sizeof(DirectoryEntry));
 
             // Write the sector back to disk
-            write_sector(first_sectorOfRootDir, buffer, fs->boot_sector.bytes_per_sector);
+            write_sector(first_data_sector, buff, fs->boot_sector.bytes_per_sector);
 
-            // Replace this with your actual VGA print function
-            print_str("\nFile created successfully: ");
-            print_str(filename);
-            print_str("\nFile size: ");
-            print_int(0);
+            // Update the directory entry
+            update_directory_entry(&entry, name, ext, 0x20, first_cluster, 0);
+
             return;
         }
-        else {
-            print_str("No empty directory entry found\n");
-        }
     }
-
-    // Update the directory entry
-    update_directory_entry(&newEntry, filename, "txt", 0x20, first_cluster, 0);
-
-    // Write the file content to disk
-    write_file(filename, FAT, 0);
-}
+    print_str("\nNo empty directory entries found\n");
+} 

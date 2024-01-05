@@ -4,7 +4,7 @@
 #include <stdint.h>
 #include "common.h"
 #include "memory.h"
-#include "str_manip.h"
+#include "strings.h"
 #include "hdd.h"
 
 typedef struct {
@@ -50,6 +50,7 @@ typedef struct {
 
     // Additional field for root cluster
     uint32_t root_cluster;
+    uint32_t total_clusters;
 } __attribute__((packed)) BootSector;
 
 typedef struct {
@@ -87,18 +88,21 @@ extern fat_type fatType;
 typedef uint8_t bool;
 
 void initialize_fat_file_system(FatFileSystem* fs, char* file);
-void read_boot_sector(BootSector* bs);
-uint32_t find_directory_entry(DirectoryEntry* entry, char* filename);
-void update_directory_entry(DirectoryEntry* entry, char* filename, char* extension, uint8_t attributes, uint32_t first_cluster, uint32_t file_size);
-void write_directory_entry(DirectoryEntry* entry, char* filename);
-void identify_fat_system(uint32_t total_clusters);
-void write_file(char* filename, uint32_t* FAT, uint32_t file_size);
-void read_file(char* filename, char* buffer, uint32_t buffer_size);
-void parse_filename(char* filename, char* name, char* ext);
-void delete_file(char* filename);
-void create_file(char *filename, FatFileSystem* fs, uint32_t* FAT);
 
-// void copy_file
-// void rename_file
+void read_boot_sector(BootSector* bs);
+
+uint32_t find_directory_entry(DirectoryEntry* entry, char* filename);
+
+void update_directory_entry(DirectoryEntry* entry, char* filename, char* extension, uint8_t attributes, uint32_t first_cluster, uint32_t file_size);
+
+void identify_fat_system(uint32_t total_clusters);
+
+void write_file(char* filename, uint32_t* FAT, uint32_t file_size);
+
+void read_file(char* filename, char* buffer, uint32_t buffer_size);
+
+void parse_filename(char* filename, char* name, char* ext);
+
+void create_file(char *filename, FatFileSystem* fs);
 
 #endif 

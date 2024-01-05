@@ -2,7 +2,7 @@
 #include "ports.h"
 #include "vga.h"
 #include "keyboard.h"
-#include "str_manip.h"
+#include "strings.h"
 #include "common.h"
 
 
